@@ -2,8 +2,8 @@
 {
     internal static class ApiRanks
     {
-        internal const string Emea = "emea";
-        internal const string Ncsa = "ncsa";
-        internal const string Apac = "apac";
+        public const string Emea = "emea";
+        public const string Ncsa = "ncsa";
+        public const string Apac = "apac";
     }
 }

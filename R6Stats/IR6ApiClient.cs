@@ -20,6 +20,10 @@ namespace R6Stats
 
         Task<KeyValuePair<string, Rank>> GetRankAsync(string profileId, ERegion region, EPlatform platform, int season = -1);
 
-        Task<Dictionary<string, Rank>> GetRanksAsync(IEnumerable<string> profileIds, ERegion region, EPlatform platform, int season = -1);
+        Task<IDictionary<string, Rank>> GetRanksAsync(IEnumerable<string> profileIds, ERegion region, EPlatform platform, int season = -1);
+
+        Task<KeyValuePair<string, IEnumerable<Operator>>> GetOperatorsAsync(string profileId, EPlatform platform, EOperatorStatisticsType statisticsType);
+
+        Task<IDictionary<string, IEnumerable<Operator>>> GetOperatorsAsync(IEnumerable<string> profileIds, EPlatform platform, EOperatorStatisticsType statisticsType);
     }
 }

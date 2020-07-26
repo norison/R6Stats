@@ -127,7 +127,7 @@ namespace R6Stats
             var ranks = await GetRanksAsync(new[] { profileId }, region, platform, season);
             return ranks.FirstOrDefault();
         }
-        public async Task<Dictionary<string, Rank>> GetRanksAsync(IEnumerable<string> profileIds, ERegion region, EPlatform platform, int season = -1)
+        public async Task<IDictionary<string, Rank>> GetRanksAsync(IEnumerable<string> profileIds, ERegion region, EPlatform platform, int season = -1)
         {
             var ranksRequest = new RanksRequest
             {
@@ -143,6 +143,36 @@ namespace R6Stats
 
             var ranksResponse = await _apiManager.GetRanksResponseAsync(ranksRequest);
             return ranksResponse.RankContracts.ToDictionary(r => r.Key, r => ApiMapper.GetMappedRank(r.Value));
+        }
+
+        public async Task<KeyValuePair<string, IEnumerable<Operator>>> GetOperatorsAsync(string profileId, EPlatform platform, EOperatorStatisticsType statisticsType)
+        {
+            var operators = await GetOperatorsAsync(new[] { profileId }, platform, statisticsType);
+            return operators.FirstOrDefault();
+        }
+        public async Task<IDictionary<string, IEnumerable<Operator>>> GetOperatorsAsync(IEnumerable<string> profileIds, EPlatform platform, EOperatorStatisticsType statisticsType)
+        {
+            if (profileIds == null) throw new ArgumentNullException(nameof(profileIds));
+
+            if (!Enum.IsDefined(typeof(EPlatform), platform))
+                throw new InvalidEnumArgumentException(nameof(platform), (int) platform, typeof(EPlatform));
+
+            if (!Enum.IsDefined(typeof(EOperatorStatisticsType), statisticsType))
+                throw new InvalidEnumArgumentException(nameof(statisticsType), (int) statisticsType,
+                    typeof(EOperatorStatisticsType));
+
+            var operatorsRequest = new OperatorsRequest
+            {
+                UbiAppId = _settings.UbiAppId,
+                Ticket = _ticket,
+                SessionId = _sessionId,
+                ProfileIds = profileIds,
+                Platform = platform,
+                StatisticsType = statisticsType
+            };
+
+            var response = await _apiManager.GetOperatorsResponseAsync(operatorsRequest);
+            return response.Operators.ToDictionary(o => o.Key, o => o.Value.Select(ApiMapper.GetMappedOperator));
         }
 
         #endregion
