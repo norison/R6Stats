@@ -1,6 +1,6 @@
 ﻿namespace R6Stats.Enums
 {
-    public  enum EPlatformType
+    public  enum EPlatform
     {
         Uplay,
         Xbox,

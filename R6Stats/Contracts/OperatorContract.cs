@@ -1,9 +1,9 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace R6Stats.Models
+namespace R6Stats.Contracts
 {
-    public class Operator
+    internal class OperatorContract
     {
         [JsonProperty("roundwon")]
         public int Wins { get; internal set; }
@@ -31,7 +31,5 @@ namespace R6Stats.Models
 
         [JsonProperty("timeplayed")]
         public TimeSpan TimePlayed { get; internal set; }
-
-        public OperatorDefinition Definition { get; internal set; }
     }
 }

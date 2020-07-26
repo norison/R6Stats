@@ -2,9 +2,9 @@
 using R6Stats.Converters;
 using R6Stats.Enums;
 
-namespace R6Stats.Models
+namespace R6Stats.Contracts
 {
-    public class OperatorDefinition
+    internal class OperatorDefinitionContract
     {
         [JsonProperty("id")]
         public string Id { get; internal set; }
@@ -17,7 +17,7 @@ namespace R6Stats.Models
         public string Index { get; internal set; }
 
         [JsonProperty("figure")]
-        public Figure Figure { get; internal set; }
+        public FigureContract FigureContract { get; internal set; }
 
         [JsonProperty("mask")]
         public string Mask { get; internal set; }
@@ -26,10 +26,10 @@ namespace R6Stats.Models
         public string Badge { get; internal set; }
 
         [JsonProperty("uniqueStatistic")]
-        public Uniquestatistic UniqueStatistic { get; internal set; }
+        public UniquestatisticContract UniqueStatistic { get; internal set; }
     }
 
-    public class Figure
+    internal class FigureContract
     {
         [JsonProperty("small")]
         public string Small { get; internal set; }
@@ -38,22 +38,22 @@ namespace R6Stats.Models
         public string Large { get; internal set; }
     }
 
-    public class Uniquestatistic
+    internal class UniquestatisticContract
     {
         [JsonProperty("pvp")]
-        public Pvp Pvp { get; internal set; }
+        public PvpContract PvpContract { get; internal set; }
 
         [JsonProperty("pve")]
-        public Pve Pve { get; internal set; }
+        public PveContract PveContract { get; internal set; }
     }
 
-    public class Pvp
+    internal class PvpContract
     {
         [JsonProperty("statisticId")]
         public string StatisticId { get; internal set; }
     }
 
-    public class Pve
+    internal class PveContract
     {
         [JsonProperty("statisticId")]
         public string StatisticId { get; internal set; }

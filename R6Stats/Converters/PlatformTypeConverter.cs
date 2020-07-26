@@ -5,19 +5,19 @@ using System;
 
 namespace R6Stats.Converters
 {
-    internal class PlatformTypeConverter : JsonConverter<EPlatformType>
+    internal class PlatformTypeConverter : JsonConverter<EPlatform>
     {
-        public override void WriteJson(JsonWriter writer, EPlatformType value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, EPlatform value, JsonSerializer serializer)
         {
             switch (value)
             {
-                case EPlatformType.Uplay:
+                case EPlatform.Uplay:
                     writer.WriteValue(ApiCommon.UplayString);
                     break;
-                case EPlatformType.Xbox:
+                case EPlatform.Xbox:
                     writer.WriteValue(ApiCommon.XboxString);
                     break;
-                case EPlatformType.Playstation:
+                case EPlatform.Playstation:
                     writer.WriteValue(ApiCommon.PlaystationString);
                     break;
                 default:
@@ -25,14 +25,14 @@ namespace R6Stats.Converters
             }
         }
 
-        public override EPlatformType ReadJson(JsonReader reader, Type objectType, EPlatformType existingValue, bool hasExistingValue,
+        public override EPlatform ReadJson(JsonReader reader, Type objectType, EPlatform existingValue, bool hasExistingValue,
             JsonSerializer serializer)
         {
             return reader.Value switch
             {
-                ApiCommon.UplayString => EPlatformType.Uplay,
-                ApiCommon.XboxString => EPlatformType.Xbox,
-                ApiCommon.PlaystationString => EPlatformType.Playstation,
+                ApiCommon.UplayString => EPlatform.Uplay,
+                ApiCommon.XboxString => EPlatform.Xbox,
+                ApiCommon.PlaystationString => EPlatform.Playstation,
                 _ => throw new Exception($"Couldn't convert {reader.ValueType} to {objectType}")
             };
         }
