@@ -5,6 +5,7 @@ namespace R6Stats.Contracts.Responses
 {
     internal class OperatorsResponse
     {
-        public IDictionary<string, IList<OperatorModel>> Operators { get; set; }
+        public IDictionary<string, IList<OperatorModel>> OperatorModels { get; set; }
+        public Dictionary<string, OperatorDefinition> OperatorDefinitions { get; set; }
     }
 }

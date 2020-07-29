@@ -31,6 +31,6 @@ namespace R6Stats.Contracts.Models
         [JsonProperty("timeplayed")]
         public int TimePlayed { get; internal set; }
 
-        public OperatorDefinitionModel OperatorDefinition { get; set; }
+        public OperatorDefinition OperatorDefinition { get; set; }
     }
 }

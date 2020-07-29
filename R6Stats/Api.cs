@@ -15,7 +15,9 @@ namespace R6Stats
             restClient.UseNewtonsoftJson();
             restClient.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true;
 
-            var apiManager = new ApiManager(restClient);
+            var definitionsLoader = new DefinitionLoader();
+
+            var apiManager = new ApiManager(restClient, definitionsLoader);
 
             return new R6ApiClient(apiManager, settings);
         }

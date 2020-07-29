@@ -6,7 +6,6 @@ namespace R6Stats
 {
     internal interface IApiManager
     {
-        Task LoadEndpoints();
         Task<LoginResponse> GetLoginResponseAsync(LoginRequest loginRequest);
         Task<ProfilesResponse> GetProfilesResponseAsync(ProfilesRequest profilesRequest);
         Task<ProgressionsResponse> GetProgressionsResponseAsync(ProgressionsRequest progressionsRequest);

@@ -4,7 +4,7 @@ using R6Stats.Enums;
 
 namespace R6Stats.Contracts.Models
 {
-    internal class OperatorDefinitionModel
+    internal class OperatorDefinition
     {
         [JsonProperty("id")]
         public string Id { get; internal set; }

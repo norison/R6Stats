@@ -172,7 +172,7 @@ namespace R6Stats
             };
 
             var response = await _apiManager.GetOperatorsResponseAsync(operatorsRequest);
-            return response.Operators.ToDictionary(o => o.Key, o => o.Value.Select(ApiMapper.GetMappedOperator));
+            return response.OperatorModels.ToDictionary(o => o.Key, o => o.Value.Select(ApiMapper.GetMappedOperator));
         }
 
         #endregion

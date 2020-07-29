@@ -1,18 +1,15 @@
 ﻿using Newtonsoft.Json;
 using R6Stats.Constants;
-using R6Stats.Contracts.Models;
 using R6Stats.Contracts.Requests;
 using R6Stats.Contracts.Responses;
-using R6Stats.Enums;
 using R6Stats.Exceptions;
 using R6Stats.Extensions;
-using R6Stats.Helpers;
 using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using R6Stats.Enums;
 
 namespace R6Stats
 {
@@ -21,26 +18,23 @@ namespace R6Stats
         #region Private Fields
 
         private readonly IRestClient _restClient;
-        private string _operatorsEndpoint = ApiRoutes.RainbowSixBaseUrl + "assets/data/operators.d72ec5b825.json";
-        private string _weaponsEndpoint = ApiRoutes.RainbowSixBaseUrl + "assets/data/weapons.8a9b3d9e7d.json";
-        private string _seasonsEndpoint = ApiRoutes.RainbowSixBaseUrl + "assets/data/seasons.3a4769b878.json";
-
-        private Dictionary<string, OperatorDefinitionModel> _operatorDefinitions;
+        private readonly IDefinitionLoader _definitionLoader;
 
         #endregion
 
         #region Constructor
 
-        public ApiManager(IRestClient restClient)
+        public ApiManager(IRestClient restClient, IDefinitionLoader definitionLoader)
         {
             _restClient = restClient;
+            _definitionLoader = definitionLoader;
         }
 
         #endregion
 
-        #region Public Static Methods
+        #region Private Static Methods
 
-        public static void EnsureSuccessfulResponse(IRestResponse response)
+        private static void EnsureSuccessfulResponse(IRestResponse response)
         {
             if (response.IsSuccessful())
                 return;
@@ -49,10 +43,6 @@ namespace R6Stats
             var error = JsonConvert.DeserializeObject<ErrorResponse>(response.Content);
             throw RestException.CreateException(response, error.Message);
         }
-
-        #endregion
-
-        #region Private Static Methods
 
         private static ICollection<KeyValuePair<string, string>> GetLoginHeaders(string token, string ubiAppId)
         {
@@ -74,34 +64,9 @@ namespace R6Stats
             };
         }
 
-        private static string FindBetween(string str, string start, string end)
-        {
-            var startPos = str.IndexOf(start, StringComparison.Ordinal) + start.Length;
-            var endPos = str.IndexOf(end, startPos, StringComparison.Ordinal);
-
-            return str[startPos..endPos];
-        }
-
         #endregion
 
         #region Public Methods
-
-        public async Task LoadEndpoints()
-        {
-            const string mainSearch = "<script src=\"assets/scripts/main.";
-            const string endSearch = ".js\"></script>";
-            const string json = ".json";
-
-            using var wc = new WebClient();
-            var html = await wc.DownloadStringTaskAsync(ApiRoutes.RainbowSixBaseUrl);
-            var mainUrl = ApiRoutes.RainbowSixBaseUrl + "assets/scripts/main." + FindBetween(html, mainSearch, endSearch) + ".js";
-            var mainJs = await wc.DownloadStringTaskAsync(mainUrl);
-
-            _operatorsEndpoint = ApiRoutes.RainbowSixBaseUrl + "assets/data/operators." + FindBetween(mainJs, "assets/data/operators.", json) + json;
-            _weaponsEndpoint = ApiRoutes.RainbowSixBaseUrl + "assets/data/weapons." + FindBetween(mainJs, "assets/data/weapons.", json) + json;
-            _seasonsEndpoint = ApiRoutes.RainbowSixBaseUrl + "assets/data/seasons." + FindBetween(mainJs, "assets/data/seasons.", json) + json;
-        }
-
 
         public async Task<LoginResponse> GetLoginResponseAsync(LoginRequest loginRequest)
         {
@@ -155,28 +120,29 @@ namespace R6Stats
 
         public async Task<OperatorsResponse> GetOperatorsResponseAsync(OperatorsRequest operatorsRequest)
         {
-            _operatorDefinitions ??= await ApiHelper.LoadOperatorDefinitionsAsync(_operatorsEndpoint);
+            return null;
 
-            var statistics = operatorsRequest.StatisticsType switch
-            {
-                EOperatorStatisticsType.Both => string.Join(",", ApiOperators.PvpStatistics, ApiOperators.PveStatistics),
-                EOperatorStatisticsType.Pvp => ApiOperators.PvpStatistics,
-                EOperatorStatisticsType.Pve => ApiOperators.PveStatistics,
-                _ => throw new ArgumentOutOfRangeException()
-            };
+            //var statistics = operatorsRequest.StatisticsType switch
+            //{
+            //    EOperatorStatisticsType.Both => string.Join(",", ApiOperators.PvpStatistics, ApiOperators.PveStatistics),
+            //    EOperatorStatisticsType.Pvp => ApiOperators.PvpStatistics,
+            //    EOperatorStatisticsType.Pve => ApiOperators.PveStatistics,
+            //    _ => throw new ArgumentOutOfRangeException()
+            //};
 
-            var spaceId = operatorsRequest.Platform.ToSpaceIdValue();
-            var url = operatorsRequest.Platform.ToUrlValue();
-            var route = string.Format(ApiRoutes.Operators, spaceId, url);
+            //var spaceId = operatorsRequest.Platform.ToSpaceIdValue();
+            //var url = operatorsRequest.Platform.ToUrlValue();
+            //var route = string.Format(ApiRoutes.Operators, spaceId, url);
 
-            var request = new RestRequest(route, Method.GET);
-            request.AddHeaders(GetCommonHeaders(operatorsRequest.Ticket, operatorsRequest.UbiAppId, operatorsRequest.SessionId));
-            request.AddParameter("populations", string.Join(",", operatorsRequest.ProfileIds));
-            request.AddParameter("statistics", statistics);
+            //var request = new RestRequest(route, Method.GET);
+            //request.AddHeaders(GetCommonHeaders(operatorsRequest.Ticket, operatorsRequest.UbiAppId, operatorsRequest.SessionId));
+            //request.AddParameter("populations", string.Join(",", operatorsRequest.ProfileIds));
+            //request.AddParameter("statistics", statistics);
 
-            var response = await ExecuteRequestAsync(request);
+            //var response = await ExecuteRequestAsync(request);
+            //var definitions = await _definitionLoader.GetOperatorDefinitionsAsync();
 
-            return new OperatorsResponse { Operators = ApiHelper.GetOperators(operatorsRequest.ProfileIds, _operatorDefinitions, response.Content) };
+            //return new OperatorsResponse { OperatorModels = response }
         }
 
         #endregion
